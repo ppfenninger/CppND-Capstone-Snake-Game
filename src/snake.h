@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "SDL.h"
+#include "food.h"
 
 class Snake {
  public:
@@ -14,9 +15,9 @@ class Snake {
         head_x(grid_width / 2),
         head_y(grid_height / 2) {}
 
-  void Update(std::vector<SDL_Point> const &badFoods);
+  void Update(std::vector<SDL_Point> const &walls);
 
-  void GrowBody();
+  void EatFood(Food::FoodType &foodType);
   bool SnakeCell(int x, int y);
 
   Direction direction = Direction::kUp;
@@ -29,8 +30,11 @@ class Snake {
   std::vector<SDL_Point> body;
 
  private:
+  void Reverse();
+
+  void GrowBody();
   void UpdateHead();
-  void UpdateBody(SDL_Point &current_cell, SDL_Point &prev_cell, std::vector<SDL_Point> const &badFoods);
+  void UpdateBody(SDL_Point &current_cell, SDL_Point &prev_cell, std::vector<SDL_Point> const &walls);
 
   bool growing{false};
   int grid_width;

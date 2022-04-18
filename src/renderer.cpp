@@ -39,7 +39,7 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-void Renderer::Render(Snake const snake, SDL_Point const &food, std::vector<SDL_Point> const &badFoods) {
+void Renderer::Render(Snake const snake, Food const &food, std::vector<SDL_Point> const &walls) {
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
@@ -49,14 +49,14 @@ void Renderer::Render(Snake const snake, SDL_Point const &food, std::vector<SDL_
   SDL_RenderClear(sdl_renderer);
 
   // Render food
-  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
-  block.x = food.x * block.w;
-  block.y = food.y * block.h;
+  SetFoodColor(food.type);
+  block.x = food.location.x * block.w;
+  block.y = food.location.y * block.h;
   SDL_RenderFillRect(sdl_renderer, &block);
 
-  // Render bad food
-  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF);
-  for (SDL_Point const &point : badFoods) {
+  // Render walls
+  SDL_SetRenderDrawColor(sdl_renderer, 0x80, 0x80, 0x80, 0xFF);
+  for (SDL_Point const &point : walls) {
     block.x = point.x * block.w;
     block.y = point.y * block.h;
     SDL_RenderFillRect(sdl_renderer, &block);
@@ -87,4 +87,21 @@ void Renderer::Render(Snake const snake, SDL_Point const &food, std::vector<SDL_
 void Renderer::UpdateWindowTitle(int score, int fps) {
   std::string title{"Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
   SDL_SetWindowTitle(sdl_window, title.c_str());
+}
+
+void Renderer::SetFoodColor(Food::FoodType const &foodType) {
+  switch(foodType) {
+        case Food::FoodType::normal:
+            SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
+            break;
+        case Food::FoodType::fast:
+            SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0xFF, 0x00, 0xFF);
+            break;
+        case Food::FoodType::slow:
+            SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x85, 0x00, 0xFF);
+            break;
+        case Food::FoodType::reverse:
+            SDL_SetRenderDrawColor(sdl_renderer, 0xA0, 0x20, 0xF0, 0xFF);
+            break;
+  };
 }
