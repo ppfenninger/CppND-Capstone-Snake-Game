@@ -9,7 +9,6 @@ class Food {
         enum class FoodType {normal, fast, slow, reverse};
 
         Food() = default;
-        ~Food();
         Food(int x_location, int y_location) {
             location.x = x_location;
             location.y = y_location;
